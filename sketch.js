@@ -74,7 +74,7 @@ class Pendulum {
     World.add(world, [this.bob, this.constraint])
   }
   get radius() {
-    return this.bobSize;
+    return this.bob.circleRadius;
   }
   get pointA() {
     let con = this.constraint
