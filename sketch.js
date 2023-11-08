@@ -1,15 +1,24 @@
-const { Engine, World, Bodies, Constraint, MouseConstraint, Mouse } = Matter
+const { Engine, World, Bodies, Constraint, MouseConstraint, Mouse, Body } = Matter
 
 const engine = Engine.create();
 const world = engine.world;
+console.log(Body)
 
 /** @type {Pendulum} */
 let p1
 /** @type {Pendulum} */
 let p2;
 
+// Create a new synth
+const synthA = new Tone.Synth().toDestination();
+const synthB = new Tone.Synth().toDestination();
+
+
+synthA.triggerAttack(0); // Start the sound
+synthB.triggerAttack(0); // Start the sound
+
 function setup() {
-  const cnv = createCanvas(500, 500);
+  const cnv = createCanvas(1000, 570);
 
   rectMode(CORNER);
 
@@ -24,6 +33,7 @@ function setup() {
 
   p1 = new Pendulum({ x: width / 2, y: 0 })
   p2 = new Pendulum(p1.bob, undefined, 40, true)
+  p3 = new Pendulum(p2.bob, undefined, 40, true)
   let mouse = Mouse.create(cnv.elt)
   mouse.pixelRatio = pixelDensity();
   let mi = MouseConstraint.create(engine, { mouse })
@@ -36,9 +46,20 @@ function draw() {
   fill(255);
   noStroke();
   text("Use the mouse to move the bobs!", 10, 20)
+  text(`Pendulum 1 Speed: ${p1.bob.speed.toFixed(2)}}`, 10, 45)
+  //synthA.triggerAttack(p1.bob.speed.toFixed(2) * 400, "8n", Date.now());
+  text(`Pendulum 2 Speed: ${p2.bob.speed.toFixed(2)}}`, 10, 70)
+  synthA.set({
+    frequency: p1.bob.speed.toFixed(2) * 200
+  });
+  synthB.set({
+    frequency: p2.bob.speed.toFixed(2) * 200
+  });
+  
 
   p1.show();
   p2.show();
+  p3.show();
 
   noFill();
   stroke(255)
@@ -60,13 +81,18 @@ class Pendulum {
     }
     this.bobSize = bobSize;
     this.bob = Bodies.circle(x + len, y + random(-20, 20), bobSize, {
-      mass: bobSize,
-      frictionAir: 0
+      mass: bobSize * 100 * 1000 * 1000,
+      isStatic: false,
+      frictionAir: -0.005,
+      friction: 0,
+      frictionStatic: 0,
+      restitution: 1, 
+      inertia: Infinity
     })
     this.constraint = Constraint.create({
       [key]: posOrBody,
       bodyB: this.bob,
-      stiffness: 0.3
+      stiffness: 1
     })
     if (saveHistory) {
       this.history = [];

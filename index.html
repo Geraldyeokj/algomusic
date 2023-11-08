@@ -5,25 +5,61 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/addons/p5.sound.min.js"></script> -->
   <script src="https://unpkg.com/matter-js@0.14.2/build/matter.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js" integrity="sha512-jduERlz7En1IUZR54bqzpNI64AbffZWR//KJgF71SJ8D8/liKFZ+s1RxmUmB+bhCnIfzebdZsULwOrbVB5f3nQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <link rel="stylesheet" type="text/css" href="style.css">
   <meta charset="utf-8" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"
     integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ=="
     crossorigin="anonymous" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <!-- <link rel="stylesheet" href="https://ez-css.now.sh"> -->
 
-  <title>Double Pendulum</title>
+  <title>Musical Pendulum(s)</title>
 
 </head>
 
+
 <body>
-  <h1>Double Pendulum</h1>
-  <div>Uses p5.js and Matter.js</div>
-  <a href="https://thecodingtrain.com/CodingChallenges/093-double-pendulum.html">Coding Challenge #093: Double
-    Pendulum</a>
-  with
-  <a href="https://codingtra.in"> The Coding Train</a>
-  <script src="sketch.js"></script>
+  <div>
+    <h1>Musical Pendulum(s)</h1>
+    <script src="sketch.js"></script>
+  </div>
+  <button class="m-3" id="startmusic">
+    Start Music
+  </button>
+
+  <h2>Bob Audio settings:</h2>
+
+  <div class="d-flex flex-row">
+    <div class="d-flex flex-row p-3">
+      <div class="m-3">
+        <label for="bob1">Bob 1 Tone</label>
+      </div>
+      <input type="range" id="bob1" name="bob1" min="0" max="11" />
+    </div>
+  
+    <div class="d-flex flex-row p-3">
+      <div class="m-3">
+        <label class="mr-3" for="bob2">Bob 2 Tone</label>
+      </div>
+      <input type="range" id="bob2" name="bob2" min="0" max="100" value="90" step="10" />
+    </div>
+
+    <div class="d-flex flex-row p-3">
+      <div class="m-3">
+        <label class="mr-3" for="bob3">Bob 3 Tone</label>
+      </div>
+      <input type="range" id="bob3" name="bob3" min="0" max="100" value="90" step="10" />
+    </div>
+  </div>
+  
+
+  <script> 
+    document.querySelector('#startmusic')?.addEventListener('click', async () => {
+      await Tone.start()
+      console.log('audio is ready')
+    })
+  </script>
 </body>
 
 </html>
