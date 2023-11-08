@@ -28,7 +28,7 @@
     Start Music
   </button>
 
-  <h2>Bob Audio settings:</h2>
+  <h2>Bob Audio Settings:</h2>
 
   <div class="d-flex flex-row">
     <div class="d-flex flex-row p-3">
@@ -42,14 +42,47 @@
       <div class="m-3">
         <label class="mr-3" for="bob2">Bob 2 Tone</label>
       </div>
-      <input type="range" id="bob2" name="bob2" min="0" max="100" value="90" step="10" />
+      <input type="range" id="bob2" name="bob2" min="0" max="11" />
     </div>
 
     <div class="d-flex flex-row p-3">
       <div class="m-3">
         <label class="mr-3" for="bob3">Bob 3 Tone</label>
       </div>
-      <input type="range" id="bob3" name="bob3" min="0" max="100" value="90" step="10" />
+      <input type="range" id="bob3" name="bob3" min="0" max="11" />
+    </div>
+
+    <div class="d-flex flex-row p-3">
+      <div class="m-3">
+        <label class="mr-3" for="scale">Scale (number)</label>
+      </div>
+      <input type="text" id="scale" name="scale" min="1" max="12" />
+    </div>
+  </div>
+
+  <h2>Bob Physics Settings:</h2>
+
+  <div class="d-flex flex-row">
+   
+    <div class="d-flex flex-row p-3">
+      <div class="m-3">
+        <label class="mr-3" for="bob1friction">Bob 1 Air Resistance</label>
+      </div>
+      <input type="range" id="bob1friction" name="bob1friction" min="0" max="6" />
+    </div>
+
+    <div class="d-flex flex-row p-3">
+      <div class="m-3">
+        <label class="mr-3" for="bob2friction">Bob 2 Air Resistance</label>
+      </div>
+      <input type="range" id="bob2friction" name="bob2friction" min="0" max="6" />
+    </div>
+
+    <div class="d-flex flex-row p-3">
+      <div class="m-3">
+        <label class="mr-3" for="bob3friction">Bob 3 Air Resistance</label>
+      </div>
+      <input type="range" id="bob3friction" name="bob3friction" min="0" max="6" />
     </div>
   </div>
   
