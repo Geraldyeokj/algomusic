@@ -18,6 +18,7 @@ const synthC = new Tone.Synth().toDestination();
 
 synthA.triggerAttack(0); // Start the sound
 synthB.triggerAttack(0); // Start the sound
+synthC.triggerAttack(0); // Start the sound
 
 function setup() {
   const cnv = createCanvas(1000, 570);
@@ -44,7 +45,11 @@ function setup() {
 
 
 function getBobTone(bobNumber) {
-  return scaleIndexToNote[document.getElementById(`bob${bobNumber}`).value] + document.getElementById(`scale`).value//gets the oninput value
+  return scaleIndexToNote[document.getElementById(`bob${bobNumber}`).value] + (document.getElementById(`scale`).value == "" ? 4 : document.getElementById(`scale`).value)//gets the oninput value
+}
+
+function getRandomTone(bobNumber) {
+  return scaleIndexToNote[Math.floor(Math.random() * 11).toString()] + (document.getElementById(`scale`).value == "" ? 4 : document.getElementById(`scale`).value)//gets the oninput value
 }
 
 function draw() {
@@ -52,32 +57,34 @@ function draw() {
   fill(255);
   noStroke();
   text("Use the mouse to move the bobs!", 10, 20)
-  text(`Pendulum 1\nSpeed: ${p1.bob.speed.toFixed(2)}, Tone: ${getBobTone(1)}`, 10, 45)
+  text(`Pendulum 1\nSpeed: ${p1.bob.speed.toFixed(2)}, Tone: ${getBobTone(1)}, ${getRandomTone(1)}`, 10, 45)
   //synthA.triggerAttack(p1.bob.speed.toFixed(2) * 400, "8n", Date.now());
   text(`Pendulum 2\nSpeed: ${p2.bob.speed.toFixed(2)}, Tone: ${getBobTone(2)}`, 10, 95)
   text(`Pendulum 3\nSpeed: ${p3.bob.speed.toFixed(2)}, Tone: ${getBobTone(3)}`, 10, 145)
   synthA.set({
-    volume: 0 - p1.bob.speed.toFixed(2) * 1
+    volume: -((p1.bob.speed.toFixed(2) * 10) ** 1.5)
   });
   synthB.set({
-    volume: 0 - p2.bob.speed.toFixed(2) * 1
+    volume: -((p2.bob.speed.toFixed(2) * 10) ** 1.5)
   });
   synthC.set({
-    volume: 0 - p3.bob.speed.toFixed(2) * 1
+    volume: -((p3.bob.speed.toFixed(2) * 10) ** 1.5)
   });
 
+  p1.bob.frictionAir = 0.015 - 0.005 * document.getElementById(`bob1friction`).value
+  p2.bob.frictionAir = 0.015 - 0.005 * document.getElementById(`bob2friction`).value
   p3.bob.frictionAir = 0.015 - 0.005 * document.getElementById(`bob3friction`).value
 
 
-  // synthA.set({
-  //   frequency: getBobTone(1)
-  // });
-  // synthB.set({
-  //   frequency: getBobTone(2)
-  // });
-  // synthC.set({
-  //   frequency: getBobTone(3)
-  // });
+  synthA.set({
+    frequency: getBobTone(1)
+  });
+  synthB.set({
+    frequency: getBobTone(2)
+  });
+  synthC.set({
+    frequency: getBobTone(3)
+  });
   
 
   p1.show();
