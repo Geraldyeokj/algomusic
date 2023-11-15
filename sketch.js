@@ -20,6 +20,28 @@ synthA.triggerAttack(0); // Start the sound
 synthB.triggerAttack(0); // Start the sound
 synthC.triggerAttack(0); // Start the sound
 
+var ticks = 0;
+var modulo = 10000;
+var baseFreq = 0;
+var bob2Freq = 0;
+var bob3Freq = 0;
+
+// CREDIT: professor's code
+function calcNote (rootFreq, num) {
+  const ratios = [
+     1,      // unison ( 1/1 )       // C
+     9/8,    // major second         // D
+     5/4,    // major third          // E
+     4/3,    // fourth               // F
+     3/2,    // fifth                // G
+     5/3,    // major sixth          // A
+     15/8,   // major seventh        // B
+     2       // octave ( 2/1 )       // C
+  ]
+  let freq = rootFreq * ratios[num]
+  return freq
+}
+
 function setup() {
   const cnv = createCanvas(1000, 570);
 
@@ -52,17 +74,49 @@ function getRandomTone(bobNumber) {
   return scaleIndexToNote[Math.floor(Math.random() * 11).toString()] + (document.getElementById(`scale`).value == "" ? 4 : document.getElementById(`scale`).value)//gets the oninput value
 }
 
+function getBaseFreq() {
+  return document.getElementById(`basefreq`).value//gets the oninput value
+}
+
+function getDrift() {
+  return document.getElementById(`drift`).value//gets the oninput value
+}
+
 function draw() {
   background(51);
   fill(255);
   noStroke();
+
+  if (getBaseFreq() != baseFreq) {
+    baseFreq = getBaseFreq()
+    bob2Freq = calcNote(baseFreq, Math.floor(Math.random() * 6) + 1)
+    bob3Freq = calcNote(baseFreq, Math.floor(Math.random() * 6) + 1)
+  }
+
+  if ((getDrift() != 0)) {
+    modulo = 1000 - 100 * getDrift()
+  } else {
+    modulo = Infinity
+  }
+ 
+
+  if ((getDrift() != 0) && (ticks % modulo == 0)) {
+    if (Math.floor(Math.random() * 2) == 0) {
+      bob2Freq = calcNote(baseFreq, Math.floor(Math.random() * 6) + 1)
+    } else{
+      bob3Freq = calcNote(baseFreq, Math.floor(Math.random() * 6) + 1)
+    }
+    ticks = 0
+  }
+
   text("Use the mouse to move the bobs!", 10, 20)
-  text(`Pendulum 1\nSpeed: ${p1.bob.speed.toFixed(2)}, Tone: ${getBobTone(1)}, ${getRandomTone(1)}`, 10, 45)
-  //synthA.triggerAttack(p1.bob.speed.toFixed(2) * 400, "8n", Date.now());
-  text(`Pendulum 2\nSpeed: ${p2.bob.speed.toFixed(2)}, Tone: ${getBobTone(2)}`, 10, 95)
-  text(`Pendulum 3\nSpeed: ${p3.bob.speed.toFixed(2)}, Tone: ${getBobTone(3)}`, 10, 145)
+  text(`Pendulum 1\nSpeed: ${p1.bob.speed.toFixed(2)}, Freq: ${baseFreq}`, 10, 45)
+  text(`Pendulum 2\nSpeed: ${p2.bob.speed.toFixed(2)}, Freq: ${bob2Freq}`, 10, 95)
+  text(`Pendulum 3\nSpeed: ${p3.bob.speed.toFixed(2)}, Freq: ${bob3Freq}`, 10, 145)
+  text(`Clock info\nTicks: ${ticks %  modulo}, Modulo: ${modulo}`, 10, 195)
+  ticks += 1
   synthA.set({
-    volume: -((p1.bob.speed.toFixed(2) * 10) ** 1.5)
+    volume: -((p1.bob.speed.toFixed(2) * 10) ** 2.0)
   });
   synthB.set({
     volume: -((p2.bob.speed.toFixed(2) * 10) ** 1.5)
@@ -71,19 +125,19 @@ function draw() {
     volume: -((p3.bob.speed.toFixed(2) * 10) ** 1.5)
   });
 
-  p1.bob.frictionAir = 0.015 - 0.005 * document.getElementById(`bob1friction`).value
-  p2.bob.frictionAir = 0.015 - 0.005 * document.getElementById(`bob2friction`).value
-  p3.bob.frictionAir = 0.015 - 0.005 * document.getElementById(`bob3friction`).value
+  p1.bob.frictionAir = 0.015 - 0.0025 * document.getElementById(`bob1friction`).value
+  p2.bob.frictionAir = 0.015 - 0.0025 * document.getElementById(`bob2friction`).value
+  p3.bob.frictionAir = 0.015 - 0.0025 * document.getElementById(`bob3friction`).value
 
 
   synthA.set({
-    frequency: getBobTone(1)
+    frequency: baseFreq
   });
   synthB.set({
-    frequency: getBobTone(2)
+    frequency: bob2Freq
   });
   synthC.set({
-    frequency: getBobTone(3)
+    frequency: bob3Freq
   });
   
 
