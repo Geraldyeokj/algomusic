@@ -12,19 +12,23 @@ let p2;
 const scaleIndexToNote = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
 // Create a new synth
-const synthA = new Tone.Synth().toDestination();
+//const synthA = new Tone.Synth().toDestination();
 const synthB = new Tone.Synth().toDestination();
 const synthC = new Tone.Synth().toDestination();
 
-synthA.triggerAttack(0); // Start the sound
-synthB.triggerAttack(0); // Start the sound
-synthC.triggerAttack(0); // Start the sound
+// synthA.triggerAttack(0); // Start the sound
+// synthB.triggerAttack(0); // Start the sound
+// synthC.triggerAttack(0); // Start the sound
 
 var ticks = 0;
 var modulo = 10000;
 var baseFreq = 0;
 var bob2Freq = 0;
 var bob3Freq = 0;
+
+var bob1Reset = true;
+var bob2Reset = true;
+var bob3Reset = true;
 
 // CREDIT: professor's code
 function calcNote (rootFreq, num) {
@@ -109,36 +113,124 @@ function draw() {
     ticks = 0
   }
 
+  if (p1.bob.speed.toFixed(2) < 0.37) {
+    bob1Reset = true
+  }
+  if (p2.bob.speed.toFixed(2) < 0.37) {
+    bob2Reset = true
+  }
+  if (p3.bob.speed.toFixed(2) < 0.37) {
+    bob3Reset = true
+  }
+
   text("Use the mouse to move the bobs!", 10, 20)
-  text(`Pendulum 1\nSpeed: ${p1.bob.speed.toFixed(2)}, Freq: ${baseFreq}`, 10, 45)
-  text(`Pendulum 2\nSpeed: ${p2.bob.speed.toFixed(2)}, Freq: ${bob2Freq}`, 10, 95)
-  text(`Pendulum 3\nSpeed: ${p3.bob.speed.toFixed(2)}, Freq: ${bob3Freq}`, 10, 145)
+  text(`Pendulum 1\nSpeed: ${p1.bob.speed.toFixed(2)}, Freq: ${Number(baseFreq).toFixed(1)} ${p1.bob.position.x.toFixed(2)} ${bob1Reset} ${(5 ** ((p1.bob.speed.toFixed(2) * 10) ** 0.25)).toFixed(1)} ${p1.bob.velocity.x.toFixed(2)}`, 10, 45)
+  text(`Pendulum 2\nSpeed: ${p2.bob.speed.toFixed(2)}, Freq: ${(bob2Freq).toFixed(1)} ${p2.bob.position.x.toFixed(2)} ${bob2Reset} ${(5 ** ((p2.bob.speed.toFixed(2) * 10) ** 0.25)).toFixed(1)}`, 10, 95)
+  text(`Pendulum 3\nSpeed: ${p3.bob.speed.toFixed(2)}, Freq: ${(bob3Freq).toFixed(1)} ${p3.bob.position.x.toFixed(2)} ${bob3Reset} ${(5 ** ((p3.bob.speed.toFixed(2) * 10) ** 0.125)).toFixed(1)}`, 10, 145)
   text(`Clock info\nTicks: ${ticks %  modulo}, Modulo: ${modulo}`, 10, 195)
   ticks += 1
-  synthA.set({
-    volume: -((p1.bob.speed.toFixed(2) * 10) ** 2.0)
-  });
-  synthB.set({
-    volume: -((p2.bob.speed.toFixed(2) * 10) ** 1.5)
-  });
-  synthC.set({
-    volume: -((p3.bob.speed.toFixed(2) * 10) ** 1.5)
-  });
+  // synthA.set({
+  //   volume: -((p1.bob.speed.toFixed(2) * 10) ** 2.0)
+  // });
+  // synthB.set({
+  //   volume: -((p2.bob.speed.toFixed(2) * 10) ** 1.5)
+  // });
+  // synthC.set({
+  //   volume: -((p3.bob.speed.toFixed(2) * 10) ** 1.5)
+  // });
+  
+  if (p1.bob.position.x <= 505 && p1.bob.position.x >= 495 && bob1Reset) {
+    const synthA = new Tone.Synth().toDestination();
+    bob1Reset = false;
+    synthA.set({
+      volume: -0.7 //-((p1.bob.speed.toFixed(2) * 10) ** 2.0)
+    });
+    synthA.set({
+      envelope : {
+      attack : 0.05,
+      decay : 5 ** ((p1.bob.speed.toFixed(2) * 10) ** 0.35),
+      sustain : 0,
+      release : 5 ** ((p1.bob.speed.toFixed(2) * 10) ** 0.35)
+    }});
+    console.log("PLAYING A")
+    synthA.triggerAttackRelease(baseFreq)
+    setTimeout(() => {
+      synthA.dispose();
+    }, 7000);
+  }
+
+  if (p2.bob.position.x <= 505 && p2.bob.position.x >= 495 && bob2Reset) {
+    const synthB = new Tone.Synth().toDestination();
+    bob2Reset = false;
+    synthB.set({
+      volume: -0.7 //-((p2.bob.speed.toFixed(2) * 10) ** 1.5)
+    });
+    synthB.set({
+      envelope : {
+      attack : 0.05,
+      decay : 5 ** ((p2.bob.speed.toFixed(2) * 10) ** 0.25),
+      sustain : 0,
+      release : 5 ** ((p2.bob.speed.toFixed(2) * 10) ** 0.25)
+    }});
+    console.log("PLAYING B")
+    synthB.triggerAttackRelease(bob2Freq)
+    setTimeout(() => {
+      synthB.dispose();
+    }, 7000);
+  }
+
+  if (p3.bob.position.x <= 505 && p3.bob.position.x >= 495 && bob3Reset) {
+    const synthC = new Tone.Synth().toDestination();
+    bob3Reset = false;
+    synthC.set({
+      volume: -0.7 //-((p2.bob.speed.toFixed(2) * 10) ** 1.5)
+    });
+    synthC.set({
+      envelope : {
+      attack : 0.05,
+      decay : 5 ** ((p3.bob.speed.toFixed(2) * 10) ** 0.2),
+      sustain : 0,
+      release : 5 ** ((p3.bob.speed.toFixed(2) * 10) ** 0.2)
+    }});
+    console.log("PLAYING C")
+    synthC.triggerAttackRelease(bob3Freq)
+    setTimeout(() => {
+      synthC.dispose();
+    }, 7000);
+  }
+ 
+
+  // synthB.set({
+  //   envelope : {
+  //   attack : 0.05,
+  //   decay : (p2.bob.speed.toFixed(2) * 10) ** 2.0,
+  //   sustain : 0,
+  //   release : (p2.bob.speed.toFixed(2) * 10) ** 2.0
+  // }});
+
+  // synthC.set({
+  //   envelope : {
+  //   attack : 0.05,
+  //   decay : (p3.bob.speed.toFixed(2) * 10) ** 2.0,
+  //   sustain : 0,
+  //   release : (p3.bob.speed.toFixed(2) * 10) ** 2.0
+  // }});
 
   p1.bob.frictionAir = 0.015 - 0.0025 * document.getElementById(`bob1friction`).value
   p2.bob.frictionAir = 0.015 - 0.0025 * document.getElementById(`bob2friction`).value
   p3.bob.frictionAir = 0.015 - 0.0025 * document.getElementById(`bob3friction`).value
 
 
-  synthA.set({
-    frequency: baseFreq
-  });
-  synthB.set({
-    frequency: bob2Freq
-  });
-  synthC.set({
-    frequency: bob3Freq
-  });
+
+  // synthA.set({
+  //   frequency: baseFreq
+  // });
+  // synthB.set({
+  //   frequency: bob2Freq
+  // });
+  // synthC.set({
+  //   frequency: bob3Freq
+  // });
   
 
   p1.show();
